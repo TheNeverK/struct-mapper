@@ -15,12 +15,12 @@ class CalcLexer(Lexer):
                LPAREN, RPAREN, 
                LBRACE, RBRACE,
                LBRACKET, RBRACKET, 
-               SEMI
+               SEMI, COMMA, COLON
              }
 
 
     # String containing ignored characters between tokens
-    ignore = ' \n'
+    ignore = ' \t'
 
     # Regular expression rules for tokens
     ID      = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -38,6 +38,8 @@ class CalcLexer(Lexer):
     LBRACKET          = r'\['
     RBRACKET          = r'\]'
     SEMI              = r';'
+    COMMA             = r','
+    COLON             = r':'
 
     # Keywords
     ID['signed'] = SIGNED
@@ -52,6 +54,12 @@ class CalcLexer(Lexer):
     ID['long'] = LONG
     ID['float'] = FLOAT
     ID['double'] = DOUBLE
+
+    # Define a rule so we can track line numbers
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += len(t.value)
+
 
     def error(self, t):
         print('Line %d: Bad character %r' % (self.lineno, t.value[0]))

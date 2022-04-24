@@ -5,17 +5,21 @@ from sly import Lexer
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
     tokens = { 
-               ID, ASSIGN, NUMBER,
+               ID, ASSIGN, NUMBER, CHARACTER,
 
-               SIGNED, UNSIGNED,
-               STRUCT, BOOL, CHAR, SHORT, INT, LONG, FLOAT, DOUBLE,
+               SIGNED, UNSIGNED, INCLUDE,
+               STRUCT, BOOL, CHAR, SHORT, 
+               INT, LONG, FLOAT, DOUBLE, VOID,
+               
+               INCLUDE, LIB_REFERENCE,
 
                POINTER,
 
                LPAREN, RPAREN, 
                LBRACE, RBRACE,
                LBRACKET, RBRACKET, 
-               SEMI, COMMA, COLON
+               SEMI, COMMA, COLON,
+               HASH, DOT
              }
 
 
@@ -25,10 +29,15 @@ class CalcLexer(Lexer):
     # Regular expression rules for tokens
     ID      = r'[a-zA-Z_][a-zA-Z0-9_]*'
     NUMBER  = r'\d+'
+    CHARACTER    = r'\'[^\']{1,1}\''
     ASSIGN  = r'='
 
     # Operators
     POINTER = r'\*'
+
+    # Reference
+    INCLUDE = r'\#include'
+    LIB_REFERENCE = r'\<[a-z.]+>'
 
     # Delimiters
     LPAREN            = r'\('
@@ -39,7 +48,9 @@ class CalcLexer(Lexer):
     RBRACKET          = r'\]'
     SEMI              = r';'
     COMMA             = r','
+    DOT               = r'.'
     COLON             = r':'
+    HASH              = r'#'
 
     # Keywords
     ID['signed'] = SIGNED
@@ -54,6 +65,7 @@ class CalcLexer(Lexer):
     ID['long'] = LONG
     ID['float'] = FLOAT
     ID['double'] = DOUBLE
+    ID['void'] = VOID
 
     # Define a rule so we can track line numbers
     @_(r'\n+')
@@ -67,6 +79,11 @@ class CalcLexer(Lexer):
 
 if __name__ == '__main__':
     data = '''
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
 struct simple2 {
     char* str;
     int arr[3];

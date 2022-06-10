@@ -1,0 +1,18 @@
+{
+  "void": 0,
+  "char": 8,
+  "short": 16,
+  "int": 32,
+  "long": 64,
+  "long_long": 64,
+  "pointer": 64,
+  "float": 32,
+  "double": 64,
+  "long_double": 128,
+  "signed": 32,
+  "unsigned": 32,
+  "bool": 8,
+  "complex": 16,
+  "imaginary": 8,
+  "enum": 32
+}

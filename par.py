@@ -61,6 +61,7 @@ def simplify_fields(ast):
             name = ''
             is_pointer = False
             pointer_type = ''
+            type_override = None
             if decl['meta'] != 'field_declarator':
                 continue
 
@@ -74,6 +75,16 @@ def simplify_fields(ast):
                 pointer_type = ' '.join(decl['pointer'])
 
             decl = decl['direct']
+
+            if decl['meta'] == 'function_decl':
+                # has to be a pointer
+                decl = decl['name']
+                size = lookup_type_size('pointer')
+                is_pointer = True
+                pointer_type = ' '.join(decl['pointer'])
+                decl = decl['direct']
+                type_override = f'function_pointer {field_type["type"]}()'
+
             if decl['meta'] == 'array':
                 array_size = decl['count'][0]['value']
                 name = decl['name']['name']
@@ -91,6 +102,8 @@ def simplify_fields(ast):
                 if is_pointer:
                     type_desc[name]['is_pointer'] = True
                     type_desc[name]['pointer'] = pointer_type
+                if type_override is not None:
+                    type_desc[name]['type'] = type_override
 
     return type_desc
 
